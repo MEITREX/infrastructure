@@ -7,7 +7,7 @@ resource "kubernetes_ingress_v1" "gits" {
     annotations = {
       "kubernetes.io/ingress.class"                   = "nginx"
       "nginx.ingress.kubernetes.io/ssl-redirect"      = "true"
-      "nginx.ingress.kubernetes.io/proxy-body-size"   = "10m"
+      "nginx.ingress.kubernetes.io/proxy-body-size"   = "100m"
       "nginx.ingress.kubernetes.io/proxy-buffer-size" = "10m"
     }
 
@@ -24,6 +24,7 @@ resource "kubernetes_ingress_v1" "gits" {
     }
 
     rule {
+      host = "dev.meitrex.de"
       http {
         path {
           backend {
@@ -41,6 +42,7 @@ resource "kubernetes_ingress_v1" "gits" {
     }
 
     rule {
+      host = "dev.meitrex.de"
       http {
         path {
           backend {
@@ -75,7 +77,7 @@ resource "kubernetes_ingress_v1" "gits" {
     }
 
     rule {
-      host = "minio.it-rex.ch"
+      host = "minio.meitrex.de"
 
       http {
 
@@ -95,7 +97,7 @@ resource "kubernetes_ingress_v1" "gits" {
       }
     }
     rule {
-      host = "minio-dashboard.it-rex.ch"
+      host = "minio-dashboard.meitrex.de"
 
       http {
         path {

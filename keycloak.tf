@@ -26,6 +26,7 @@ resource "helm_release" "keycloak" {
     name  = "httpRelativePath"
     value = "/keycloak/"
   }
+  /*
   set {
     name  = "image.pullPolicy"
     value = "Always"
@@ -41,5 +42,30 @@ resource "helm_release" "keycloak" {
   set {
     name  = "image.tag"
     value = "latest"
+  }
+  */
+  set {
+    name  = "ingress.enabled"
+    value = "true"
+  }
+  set {
+    name  = "ingress.hostname"
+    value = "dev.meitrex.de"
+  }
+  set {
+    name  = "ingress.path"
+    value = "/keycloak"
+  }
+  set {
+    name  = "adminIngress.enabled"
+    value = "true"
+  }
+  set {
+    name  = "adminIngress.hostname"
+    value = "dev.meitrex.de"
+  }
+  set {
+    name  = "adminIngress.path"
+    value = "/keycloak"
   }
 }

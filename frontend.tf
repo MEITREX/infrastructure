@@ -53,15 +53,15 @@ resource "kubernetes_deployment" "gits_frontend" {
           }
           env {
             name  = "NEXT_PUBLIC_OAUTH_REDIRECT_URL"
-            value = "http://orange.informatik.uni-stuttgart.de"
+            value = "https://dev.meitrex.de"
           }
           env {
             name  = "NEXT_PUBLIC_OAUTH_CLIENT_ID"
-            value = "gits-frontend"
+            value = "frontend"
           }
           env {
             name  = "NEXT_PUBLIC_OAUTH_AUTHORITY"
-            value = "http://orange.informatik.uni-stuttgart.de/keycloak/realms/GITS"
+            value = "https://dev.meitrex.de/keycloak/realms/GITS"
           }
 
           liveness_probe {

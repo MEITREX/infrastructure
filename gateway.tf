@@ -97,7 +97,7 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
           }
           env {
             name  = "JWKS_URL"
-            value = "http://keycloak:80/keycloak/realms/GITS/protocol/openid-connect/certs"
+            value = "https:/dev.meitrex.de/keycloak/realms/GITS/protocol/openid-connect/certs"
           }
 
 
