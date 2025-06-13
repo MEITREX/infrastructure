@@ -1,5 +1,5 @@
 resource "kubernetes_deployment" "gits_flashcard_service" {
-  depends_on = [helm_release.flashcard_service_db, helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull]
+  depends_on = [helm_release.flashcard_service_db, helm_release.dapr, helm_release.keel]
   metadata {
     name = "gits-flashcard-service"
     labels = {
@@ -36,13 +36,7 @@ resource "kubernetes_deployment" "gits_flashcard_service" {
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
-        container {
+       container {
           image             = "ghcr.io/it-rex-platform/flashcard_service:latest"
           image_pull_policy = "Always"
 

@@ -1,5 +1,5 @@
 resource "kubernetes_deployment" "gits_media_service" {
-  depends_on = [helm_release.media_service_db, helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull, helm_release.minio]
+  depends_on = [helm_release.media_service_db, helm_release.dapr, helm_release.keel, helm_release.minio]
   metadata {
     name = "gits-media-service"
     labels = {
@@ -41,12 +41,6 @@ resource "kubernetes_deployment" "gits_media_service" {
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
         container {
           image             = "ghcr.io/it-rex-platform/media_service:latest"
           image_pull_policy = "Always"

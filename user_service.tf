@@ -1,5 +1,5 @@
 resource "kubernetes_deployment" "gits_user_service" {
-  depends_on = [helm_release.user_service_db, helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull]
+  depends_on = [helm_release.user_service_db, helm_release.dapr, helm_release.keel]
   metadata {
     name = "gits-user-service"
     labels = {
@@ -41,12 +41,6 @@ resource "kubernetes_deployment" "gits_user_service" {
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
         container {
           image             = "ghcr.io/it-rex-platform/user_service:latest"
           image_pull_policy = "Always"

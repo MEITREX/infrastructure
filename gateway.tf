@@ -1,5 +1,5 @@
 resource "kubernetes_deployment" "gits_graphql_gateway" {
-  depends_on = [helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull]
+  depends_on = [helm_release.dapr, helm_release.keel]
   metadata {
     name = "gits-gateway"
     labels = {
@@ -42,12 +42,6 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
         container {
           image             = "ghcr.io/it-rex-platform/graphql_gateway:latest"
           image_pull_policy = "Always"

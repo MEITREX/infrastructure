@@ -26,10 +26,6 @@ resource "helm_release" "keycloak" {
     value = "/keycloak/"
   }
   set {
-    name  = "global.imagePullSecrets.0"
-    value = kubernetes_secret.image_pull.metadata[0].name
-  }
-  set {
     name  = "image.pullPolicy"
     value = "Always"
   }

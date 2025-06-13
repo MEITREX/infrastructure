@@ -1,5 +1,5 @@
 resource "kubernetes_deployment" "gits_reward_service" {
-  depends_on = [helm_release.reward_service_db, helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull]
+  depends_on = [helm_release.reward_service_db, helm_release.dapr, helm_release.keel]
   metadata {
     name = "gits-reward-service"
     labels = {
@@ -36,12 +36,6 @@ resource "kubernetes_deployment" "gits_reward_service" {
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
         container {
           image             = "ghcr.io/it-rex-platform/reward_service:latest"
           image_pull_policy = "Always"

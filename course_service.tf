@@ -1,5 +1,5 @@
 resource "kubernetes_deployment" "gits_course_service" {
-  depends_on = [helm_release.course_service_db, helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull]
+  depends_on = [helm_release.course_service_db, helm_release.dapr, helm_release.keel]
   metadata {
     name = "gits-course-service"
     labels = {
@@ -41,12 +41,6 @@ resource "kubernetes_deployment" "gits_course_service" {
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
         container {
           image             = "ghcr.io/it-rex-platform/course_service:latest"
           image_pull_policy = "Always"

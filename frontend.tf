@@ -30,10 +30,6 @@ resource "kubernetes_deployment" "gits_frontend" {
       }
 
       spec {
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
         container {
           image             = "ghcr.io/it-rex-platform/frontend:latest"
           image_pull_policy = "Always"
