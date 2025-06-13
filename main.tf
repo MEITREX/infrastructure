@@ -7,10 +7,6 @@ provider "helm" {
   }
 }
 
-resource "kubernetes_namespace" "gits" {
-  metadata {
-    name = "gits"
-  }
-}
+
 
 
