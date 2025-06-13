@@ -73,6 +73,18 @@ resource "kubernetes_deployment" "gits_media_service" {
             name  = "MINIO_URL"
             value = "http://minio:9000"
           }
+                    env {
+            name  = "MINIO_PORT"
+            value = "9000"
+          }
+          env {
+            name  = "MINIO_EXTERNAL_URL"
+            value = "minio.meitrex.de"
+          }
+          env {
+            name  = "MINIO_EXTERNAL_PORT"
+            value = "9000"
+          }
           env {
             name  = "MINIO_ACCESS_KEY"
             value = "gits"
@@ -151,6 +163,7 @@ resource "helm_release" "minio" {
   name       = "minio"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "minio"
+  version    = "16.0.10"
   namespace  = var.namespace
 
   set {
