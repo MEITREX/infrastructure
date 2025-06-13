@@ -31,7 +31,7 @@ resource "kubernetes_deployment" "gits_frontend" {
 
       spec {
         container {
-          image             = "ghcr.io/it-rex-platform/frontend:latest"
+          image             = "ghcr.io/meitrex/frontend:latest-k8s"
           image_pull_policy = "Always"
 
           name = "gits-frontend"

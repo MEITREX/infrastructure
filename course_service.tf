@@ -42,7 +42,7 @@ resource "kubernetes_deployment" "gits_course_service" {
 
       spec {
         container {
-          image             = "ghcr.io/it-rex-platform/course_service:latest"
+          image             = "ghcr.io/meitrex/course_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-course-service"

@@ -37,7 +37,7 @@ resource "kubernetes_deployment" "gits_reward_service" {
 
       spec {
         container {
-          image             = "ghcr.io/it-rex-platform/reward_service:latest"
+          image             = "ghcr.io/meitrex/reward_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-reward-service"

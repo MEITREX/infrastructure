@@ -37,7 +37,7 @@ resource "kubernetes_deployment" "gits_skilllevel_service" {
 
       spec {
         container {
-          image             = "ghcr.io/it-rex-platform/skilllevel_service:latest"
+          image             = "ghcr.io/meitrex/skilllevel_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-skilllevel-service"

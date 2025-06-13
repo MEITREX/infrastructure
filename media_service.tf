@@ -42,7 +42,7 @@ resource "kubernetes_deployment" "gits_media_service" {
 
       spec {
         container {
-          image             = "ghcr.io/it-rex-platform/media_service:latest"
+          image             = "ghcr.io/meitrex/media_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-media-service"

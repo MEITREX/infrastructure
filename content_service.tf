@@ -38,7 +38,7 @@ resource "kubernetes_deployment" "gits_content_service" {
 
       spec {
         container {
-          image             = "ghcr.io/it-rex-platform/content_service:latest"
+          image             = "ghcr.io/meitrex/content_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-content-service"

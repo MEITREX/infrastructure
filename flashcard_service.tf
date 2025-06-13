@@ -37,7 +37,7 @@ resource "kubernetes_deployment" "gits_flashcard_service" {
 
       spec {
        container {
-          image             = "ghcr.io/it-rex-platform/flashcard_service:latest"
+          image             = "ghcr.io/meitrex/flashcard_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-flashcard-service"

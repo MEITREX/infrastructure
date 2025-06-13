@@ -43,7 +43,7 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
 
       spec {
         container {
-          image             = "ghcr.io/it-rex-platform/graphql_gateway:latest"
+          image             = "ghcr.io/meitrex/graphql_gateway:latest"
           image_pull_policy = "Always"
 
           name = "gits-gateway"

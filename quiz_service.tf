@@ -37,7 +37,7 @@ resource "kubernetes_deployment" "gits_quiz_service" {
 
       spec {
         container {
-          image             = "ghcr.io/it-rex-platform/quiz_service:latest"
+          image             = "ghcr.io/meitrex/quiz_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-quiz-service"
