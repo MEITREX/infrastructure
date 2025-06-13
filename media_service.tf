@@ -73,7 +73,7 @@ resource "kubernetes_deployment" "gits_media_service" {
             name  = "MINIO_URL"
             value = "http://minio:9000"
           }
-                    env {
+          env {
             name  = "MINIO_PORT"
             value = "9000"
           }
