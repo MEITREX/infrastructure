@@ -3,7 +3,7 @@
 resource "kubernetes_ingress_v1" "gits" {
   metadata {
     name      = "gits"
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "kubernetes.io/ingress.class"                   = "nginx"
       "nginx.ingress.kubernetes.io/ssl-redirect"      = "true"

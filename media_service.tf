@@ -5,7 +5,7 @@ resource "kubernetes_deployment" "gits_media_service" {
     labels = {
       app = "gits-media-service"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "keel.sh/policy"    = "force"
       "keel.sh/match-tag" = "true"
@@ -118,7 +118,7 @@ resource "helm_release" "media_service_db" {
   name       = "media-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"
@@ -151,7 +151,7 @@ resource "helm_release" "minio" {
   name       = "minio"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "minio"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "auth.rootUser"
@@ -171,7 +171,7 @@ resource "helm_release" "minio" {
 resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_media_service_hpa" {
   metadata {
     name = kubernetes_deployment.gits_media_service.metadata[0].name
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
   }
 
   spec {

@@ -5,7 +5,7 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
     labels = {
       app = "gits-gateway"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "keel.sh/policy"    = "force"
       "keel.sh/match-tag" = "true"
@@ -131,7 +131,7 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
 resource "kubernetes_service" "gits_graphql_gateway" {
   metadata {
     name      = "gits-graphql-gateway"
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
   }
   spec {
     selector = {
@@ -150,7 +150,7 @@ resource "kubernetes_service" "gits_graphql_gateway" {
 resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_graphql_gateway_hpa" {
   metadata {
     name = kubernetes_deployment.gits_graphql_gateway.metadata[0].name
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
   }
 
   spec {

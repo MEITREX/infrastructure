@@ -5,7 +5,7 @@ resource "kubernetes_deployment" "gits_course_service" {
     labels = {
       app = "gits-course-service"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "keel.sh/policy"    = "force"
       "keel.sh/match-tag" = "true"
@@ -105,7 +105,7 @@ resource "helm_release" "course_service_db" {
   name       = "course-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"
@@ -131,7 +131,7 @@ resource "helm_release" "course_service_db" {
 resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_course_service_hpa" {
   metadata {
     name = kubernetes_deployment.gits_course_service.metadata[0].name
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
   }
 
   spec {

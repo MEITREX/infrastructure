@@ -1,7 +1,7 @@
 resource "helm_release" "keel" {
   name       = "keel"
   repository = "https://charts.keel.sh"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
   chart      = "keel"
 
   set {

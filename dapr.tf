@@ -2,7 +2,7 @@ resource "helm_release" "dapr" {
   name       = "dapr"
   repository = "https://dapr.github.io/helm-charts"
   chart      = "dapr"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 }
 
 
@@ -15,7 +15,7 @@ resource "helm_release" "redis" {
   name       = "redis"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "redis"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "auth.password"
@@ -32,7 +32,7 @@ resource "kubernetes_manifest" "dapr_state_config" {
     "kind"       = "Component"
     "metadata" = {
       "name"    = "statestore"
-      namespace = kubernetes_namespace.gits.metadata[0].name
+      namespace = var.namespace
     }
     "spec" = {
       "type"    = "state.redis"
@@ -61,7 +61,7 @@ resource "kubernetes_manifest" "dapr_pubsub_config" {
     "kind"       = "Component"
     "metadata" = {
       "name"    = "gits"
-      namespace = kubernetes_namespace.gits.metadata[0].name
+      namespace = var.namespace
     }
 
     "spec" = {

@@ -4,7 +4,7 @@ resource "kubernetes_deployment" "gits_frontend" {
     labels = {
       app = "gits-frontend"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
 
     annotations = {
       "keel.sh/policy"    = "force"
@@ -83,7 +83,7 @@ resource "kubernetes_deployment" "gits_frontend" {
 resource "kubernetes_service" "gits_frontend" {
   metadata {
     name      = "gits-frontend"
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
   }
   spec {
     selector = {

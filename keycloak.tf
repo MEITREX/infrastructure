@@ -2,7 +2,7 @@ resource "helm_release" "keycloak" {
   name       = "keycloak"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "keycloak"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "auth.adminUser"

@@ -6,7 +6,7 @@ resource "kubernetes_deployment" "gits_content_service" {
     labels = {
       app = "gits-content-service"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "keel.sh/policy"    = "force"
       "keel.sh/match-tag" = "true"
@@ -105,7 +105,7 @@ resource "helm_release" "content_service_db" {
   name       = "content-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"

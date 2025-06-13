@@ -5,7 +5,7 @@ resource "kubernetes_deployment" "gits_flashcard_service" {
     labels = {
       app = "gits-flashcard-service"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "keel.sh/policy"    = "force"
       "keel.sh/match-tag" = "true"
@@ -104,7 +104,7 @@ resource "helm_release" "flashcard_service_db" {
   name       = "flashcard-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"
