@@ -26,7 +26,7 @@ resource "helm_release" "redis" {
 }
 
 # -- comment out the two resources below when initially creating the cluster, somehow this fails to plan on the first run
-
+/*
 resource "kubernetes_manifest" "dapr_state_config" {
   manifest = {
     "apiVersion" = "dapr.io/v1alpha1"
@@ -81,3 +81,4 @@ resource "kubernetes_manifest" "dapr_pubsub_config" {
     }
   }
 }
+*/
