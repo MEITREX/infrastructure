@@ -2,6 +2,7 @@ resource "helm_release" "dapr" {
   name       = "dapr"
   repository = "https://dapr.github.io/helm-charts"
   chart      = "dapr"
+  version   = "1.11.0"
   namespace  = var.namespace
 }
 
@@ -15,6 +16,7 @@ resource "helm_release" "redis" {
   name       = "redis"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "redis"
+  version    = "17.14.2"
   namespace  = var.namespace
 
   set {

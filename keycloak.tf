@@ -2,6 +2,7 @@ resource "helm_release" "keycloak" {
   name       = "keycloak"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "keycloak"
+  version    = "24.7.4" 
   namespace  = var.namespace
 
   set {

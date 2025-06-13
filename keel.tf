@@ -3,6 +3,7 @@ resource "helm_release" "keel" {
   repository = "https://charts.keel.sh"
   namespace  = var.namespace
   chart      = "keel"
+  version   = "1.0.3"
 
   set {
     name  = "helmProvider.enabled"
