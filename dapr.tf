@@ -2,7 +2,7 @@ resource "helm_release" "dapr" {
   name       = "dapr"
   repository = "https://dapr.github.io/helm-charts"
   chart      = "dapr"
-  version   = "1.11.0"
+  version    = "1.15.5"
   namespace  = var.namespace
 }
 
@@ -60,7 +60,7 @@ resource "kubernetes_manifest" "dapr_pubsub_config" {
     "apiVersion" = "dapr.io/v1alpha1"
     "kind"       = "Component"
     "metadata" = {
-      "name"    = "gits"
+      "name"    = "meitrex"
       namespace = var.namespace
     }
 
