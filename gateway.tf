@@ -30,6 +30,7 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
 
         annotations = {
           "dapr.io/enabled"  = true
+          "dapr.io/enable-metrics" = true
           "dapr.io/app-id"   = "gateway"
           "dapr.io/app-port" = 8080
           "dapr.io/sidecar-cpu-request" = "100m"

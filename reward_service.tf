@@ -29,6 +29,7 @@ resource "kubernetes_deployment" "gits_reward_service" {
         }
         annotations = {
           "dapr.io/enabled"   = true
+          "dapr.io/enable-metrics" = true
           "dapr.io/app-id"    = "reward-service"
           "dapr.io/app-port"  = 7001
           "dapr.io/http-port" = 7000

@@ -29,6 +29,7 @@ resource "kubernetes_deployment" "gits_quiz_service" {
         }
         annotations = {
           "dapr.io/enabled"   = true
+          "dapr.io/enable-metrics" = true
           "dapr.io/app-id"    = "quiz-service"
           "dapr.io/app-port"  = 9001
           "dapr.io/http-port" = 9000

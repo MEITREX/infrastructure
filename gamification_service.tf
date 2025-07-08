@@ -29,6 +29,7 @@ resource "kubernetes_deployment" "gits_gamification_service" {
         }
         annotations = {
           "dapr.io/enabled"   = true
+          "dapr.io/enable-metrics" = true
           "dapr.io/app-id"    = "gamification-service"
           "dapr.io/app-port"  = 1201
           "dapr.io/http-port" = 1200

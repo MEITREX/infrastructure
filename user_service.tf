@@ -29,6 +29,7 @@ resource "kubernetes_deployment" "gits_user_service" {
         }
         annotations = {
           "dapr.io/enabled"   = true
+          "dapr.io/enable-metrics" = true
           "dapr.io/app-id"    = "user-service"
           "dapr.io/app-port"  = 5001
           "dapr.io/http-port" = 5000

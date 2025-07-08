@@ -29,6 +29,7 @@ resource "kubernetes_deployment" "gits_skilllevel_service" {
         }
         annotations = {
           "dapr.io/enabled"   = true
+          "dapr.io/enable-metrics" = true
           "dapr.io/app-id"    = "skilllevel-service"
           "dapr.io/app-port"  = 8001
           "dapr.io/http-port" = 8000

@@ -29,6 +29,7 @@ resource "kubernetes_deployment" "gits_flashcard_service" {
         }
         annotations = {
           "dapr.io/enabled"   = true
+          "dapr.io/enable-metrics" = true
           "dapr.io/app-id"    = "flashcard-service"
           "dapr.io/app-port"  = 6001
           "dapr.io/http-port" = 6000

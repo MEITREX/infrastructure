@@ -29,6 +29,7 @@ resource "kubernetes_deployment" "gits_course_service" {
         }
         annotations = {
           "dapr.io/enabled"   = true
+          "dapr.io/enable-metrics" = true
           "dapr.io/app-id"    = "course-service"
           "dapr.io/app-port"  = 2001
           "dapr.io/http-port" = 2000
