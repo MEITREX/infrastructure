@@ -79,11 +79,11 @@ resource "kubernetes_deployment" "gits_media_service" {
           }
           env {
             name  = "MINIO_EXTERNAL_URL"
-            value = "minio.meitrex.de"
+            value = "https://minio.meitrex.de"
           }
           env {
             name  = "MINIO_EXTERNAL_PORT"
-            value = "9000"
+            value = "443"
           }
           env {
             name  = "MINIO_ACCESS_KEY"
@@ -175,6 +175,7 @@ resource "helm_release" "minio" {
     name  = "auth.rootPassword"
     value = random_password.media_service_minio_pass.result
   }
+  
   set {
     name  = "extraEnvVars[0].name"
     value = "MINIO_BROWSER_REDIRECT_URL"

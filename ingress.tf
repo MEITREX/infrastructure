@@ -1,5 +1,3 @@
-
-
 resource "kubernetes_ingress_v1" "gits" {
   metadata {
     name      = "gits"
@@ -7,8 +5,11 @@ resource "kubernetes_ingress_v1" "gits" {
     annotations = {
       "kubernetes.io/ingress.class"                   = "nginx"
       "nginx.ingress.kubernetes.io/ssl-redirect"      = "true"
+      "nginx.ingress.kubernetes.io/enable-cors" = "true"
+      "nginx.ingress.kubernetes.io/cors-allow-origin" = "https://minio.meitrex.de"
       "nginx.ingress.kubernetes.io/proxy-body-size"   = "100m"
       "nginx.ingress.kubernetes.io/proxy-buffer-size" = "10m"
+      "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "300"
     }
 
   }
@@ -75,13 +76,28 @@ resource "kubernetes_ingress_v1" "gits" {
         }
       }
     }
+  }
+}
 
-    rule {
-      host = "minio.meitrex.de"
+resource "kubernetes_ingress_v1" "minio" {
+  metadata {
+    name      = "minio"
+    namespace = "meitrex"
+    annotations = {
+      "kubernetes.io/ingress.class"                   = "nginx"
+      "nginx.ingress.kubernetes.io/ssl-redirect"      = "true"
+      "nginx.ingress.kubernetes.io/enable-cors" = "true"
+      "nginx.ingress.kubernetes.io/cors-allow-origin" = "https://dev.meitrex.de"
+      "nginx.ingress.kubernetes.io/proxy-body-size"   = "5g"
+      "nginx.ingress.kubernetes.io/proxy-request-buffering" = "off"
+      "nginx.ingress.kubernetes.io/proxy-connect-timeout" = "300"
+    }
+  }
 
+  spec {
+      rule {
+       host = "minio.meitrex.de"
       http {
-
-
         path {
           backend {
             service {
@@ -96,9 +112,9 @@ resource "kubernetes_ingress_v1" "gits" {
         }
       }
     }
+    
     rule {
       host = "minio-dashboard.meitrex.de"
-
       http {
         path {
           backend {
@@ -116,4 +132,5 @@ resource "kubernetes_ingress_v1" "gits" {
     }
   }
 }
+
 
