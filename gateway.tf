@@ -65,6 +65,10 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
             value = "8080"
           }
           env {
+            name  = "ASSIGNMENT_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/assignment-service/method/graphql"
+          }
+          env {
             name  = "COURSE_SERVICE_URL"
             value = "http://localhost:3500/v1.0/invoke/course-service/method/graphql"
           }

@@ -74,10 +74,25 @@ resource "kubernetes_deployment" "gits_user_service" {
             name  = "KEYCLOAK_URL"
             value = "http://keycloak:80/keycloak"
           }
+
           env {
-            name  = "KEYCLOAK_PASSWORD"
+            name = "KEYCLOAK_PASSWORD"
             value = var.keycloak_admin_pw
           }
+          
+          env {
+            name  = "NEXT_PUBLIC_GITHUB_CLIENT_ID"
+            value = var.github_client_id
+          }
+
+          env {
+            name = "GITHUB_CLIENT_SECRET"
+            value = var.github_client_secret
+          }
+
+
+
+
            liveness_probe {
              http_get {
                path = "/actuator/health/liveness"
