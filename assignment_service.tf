@@ -71,7 +71,7 @@ resource "kubernetes_deployment" "gits_assignment_service" {
 
           env {
             name = "GITHUB_ORG_NAME"
-            value = "MEITREX-ASSIGNMENTS"
+            value = "MEITREX"
           }
 
           env {

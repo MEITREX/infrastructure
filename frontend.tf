@@ -65,7 +65,7 @@ resource "kubernetes_deployment" "gits_frontend" {
           }
           env {
             name  = "NEXT_PUBLIC_GITHUB_CLIENT_ID"
-            value = "Iv23liqWXtlgus3t6F7U"
+            value = "Iv23li4YaE8QambyYkY8"
           }
 
           liveness_probe {
