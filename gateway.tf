@@ -109,6 +109,10 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
             value = "http://localhost:3500/v1.0/invoke/gamification-service/method/graphql"
           }
           env {
+            name = "TUTOR_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/tutor-service/method/graphql"
+          }
+          env {
             name  = "JWKS_URL"
             value = "https:/dev.meitrex.de/keycloak/realms/GITS/protocol/openid-connect/certs"
           }
