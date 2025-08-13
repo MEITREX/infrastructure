@@ -1,0 +1,41 @@
+- name: Deploy NLP service via docker-compose
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure target dir exists
+      file:
+        path: "/home/external/Meitrex"
+        state: directory
+
+    - name: Clone repository
+      git:
+        repo: https://github.com/MEITREX/nlp_service
+        dest: "/home/external/Documents/Meitrex/nlp_service"
+        update: yes
+
+    - name: Ensure models folder exists
+      file:
+        path: "/home/external/Documents/Meitrex/nlp_service/embedding_service/models/llm_data"
+        state: directory
+
+    - name: Copy embedding model data on remote host
+      copy:
+        src: /home/external/Meitrex/resources/embeddings/gte-large-en-v1.5
+        dest: /home/external/Meitrex/nlp_service/embedding_service/models/llm_data
+        remote_src: yes
+
+    - name: Copy llm model data on remote host
+      copy:
+        src: /home/external/Meitrex/resources/llms/models/llama-3-8b-instruct
+        dest: /home/external/Meitrex/nlp_service/models/llama-3-8b-instruct
+        remote_src: yes
+
+    - name: Build Docker image for NLP service
+      command: docker build -t nlp_service .
+      args:
+        chdir: /home/external/Meitrex/nlp_service
+
+    - name: Run NLP service container
+      command: docker run -d -p 11434:11434 -p 11435:11435 --name nlp_service
+      args:
+        chdir: /home/external/Meitrex/nlp_service

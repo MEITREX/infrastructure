@@ -15,3 +15,7 @@ variable "github_client_secret" {
   type = string
   
 }
+variable "ssh_key_path" {
+  sensitive = true
+  type        = string
+}
