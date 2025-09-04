@@ -102,7 +102,7 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
           }
           env {
             name  = "DOCPROCAI_SERVICE_URL"
-            value = "http://129.69.217.248:9901/graphql/"
+            value = "http://localhost:3500/v1.0/invoke/docprocai-service/method/graphql/"
           }
           env {
             name  = "GAMIFICATION_SERVICE_URL"
@@ -116,7 +116,6 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
             name  = "JWKS_URL"
             value = "https:/dev.meitrex.de/keycloak/realms/GITS/protocol/openid-connect/certs"
           }
-
 
           liveness_probe {
             http_get {

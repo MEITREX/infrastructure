@@ -1,4 +1,4 @@
-/*resource "kubernetes_deployment" "gits_docprocai_service" {
+resource "kubernetes_deployment" "gits_docprocai_service" {
   depends_on = [helm_release.docprocai_service_db, helm_release.dapr, helm_release.keel]
   metadata {
     name = "gits-docprocai-service"
@@ -45,12 +45,12 @@
 
           resources {
             limits = {
-              cpu    = "1"
-              memory = "1Gi"
+              cpu    = "1.5"
+              memory = "4Gi"
             }
             requests = {
-              cpu    = "500m"
-              memory = "256Mi"
+              cpu    = "1"
+              memory = "2Gi"
             }
           }
 
@@ -61,35 +61,23 @@
 
           env {
             name  = "SPRING_DATASOURCE_USERNAME"
-            value = "root"
+            value = "gits"
           }
 
           env {
             name  = "SPRING_DATASOURCE_PASSWORD"
-            value = "root"
+            value = random_password.docprocai_service_db_pass.result
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 9901
+          env {
+            name = "media_service_url"
+            value = "http://localhost:3500/v1.0/invoke/media-service/method/graphql"
+          }
 
-             }
-
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
-
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 9901
-
-             }
-
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+          env {      
+            name  = "connection_string"
+            value = "user=gits password=${random_password.docprocai_service_db_pass.result} host=docprocai-service-db-postgresql port=5432 dbname=docprocai-service"
+          }
         }
       }
     }
@@ -127,4 +115,3 @@ resource "helm_release" "docprocai_service_db" {
     value = random_password.docprocai_service_db_pass.result
   }
 }
-*/

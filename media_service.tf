@@ -181,6 +181,51 @@ resource "helm_release" "minio" {
     name  = "extraEnvVars[0].name"
     value = "MINIO_BROWSER_REDIRECT_URL"
   }
+
+  set {
+    name = "extraEnvVars[1].name"
+    value = "MINIO_NOTIFY_WEBHOOK_ENABLE_onObjectCreated"
+  }
+
+  set {
+    name = "extraEnvVars[1].value"
+    value = "on"
+  }
+
+  set {
+    name = "extraEnvVars[2].name"
+    value = "MINIO_NOTIFY_WEBHOOK_ENDPOINT_onObjectCreated"
+  }
+
+  set {
+    name = "extraEnvVars[2].value"
+    value = "http://media-service/webhook/on-minio-object-create"
+  }
+
+  set {
+    name = "persistence.size"
+    value = "2Ti"
+  }
+}
+
+resource "kubernetes_service" "media_service" {
+  metadata {
+    name      = "media-service"
+    namespace = var.namespace
+    
+  }
+
+  spec {
+    selector = {
+      app = kubernetes_deployment.gits_media_service.metadata[0].name
+    }
+
+    port {
+      name       = "http"
+      port       = 80
+      target_port = 3001
+    }
+  }
 }
 
 resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_media_service_hpa" {
