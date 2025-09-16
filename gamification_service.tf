@@ -69,6 +69,16 @@ resource "kubernetes_deployment" "gits_gamification_service" {
             value = random_password.gamification_service_db_pass.result
           }
 
+          env {
+            name = "CONTENT_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/content-service/method/graphql"
+          }
+
+          env {
+            name = "COURSE_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/course-service/method/graphql"
+          }
+          
            liveness_probe {
              http_get {
                path = "/actuator/health/liveness"
@@ -76,7 +86,7 @@ resource "kubernetes_deployment" "gits_gamification_service" {
 
              }
 
-             initial_delay_seconds = 30
+             initial_delay_seconds = 90
              period_seconds        = 9
            }
 
@@ -87,7 +97,7 @@ resource "kubernetes_deployment" "gits_gamification_service" {
 
              }
 
-             initial_delay_seconds = 30
+             initial_delay_seconds = 90
              period_seconds        = 9
            }
         }
