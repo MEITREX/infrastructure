@@ -29,11 +29,11 @@ resource "kubernetes_deployment" "gits_<template>_service" {
           app = "gits-<template>-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
+          "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "<template>-service"
-          "dapr.io/app-port"  = 0001 
-          "dapr.io/http-port" = 0000
+          "dapr.io/app-id"         = "<template>-service"
+          "dapr.io/app-port"       = 0001
+          "dapr.io/http-port"      = 0000
         }
       }
 
@@ -70,27 +70,27 @@ resource "kubernetes_deployment" "gits_<template>_service" {
             value = random_password.<template>_service_db_pass.result
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 0001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 0001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 0001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 0001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }

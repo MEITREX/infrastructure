@@ -28,16 +28,16 @@ resource "kubernetes_deployment" "gits_user_service" {
           app = "gits-user-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
-          "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "user-service"
-          "dapr.io/app-port"  = 5001
-          "dapr.io/http-port" = 5000
-          "dapr.io/sidecar-cpu-request" = "100m"
-          "dapr.io/sidecar-cpu-limit"   = "200m"
+          "dapr.io/enabled"                = true
+          "dapr.io/enable-metrics"         = true
+          "dapr.io/app-id"                 = "user-service"
+          "dapr.io/app-port"               = 5001
+          "dapr.io/http-port"              = 5000
+          "dapr.io/sidecar-cpu-request"    = "100m"
+          "dapr.io/sidecar-cpu-limit"      = "200m"
           "dapr.io/sidecar-memory-request" = "100Mi"
           "dapr.io/sidecar-memory-limit"   = "200Mi"
-          "dapr.io/env" = "GOMEMLIMIT=180MiB"
+          "dapr.io/env"                    = "GOMEMLIMIT=180MiB"
         }
       }
 
@@ -76,44 +76,41 @@ resource "kubernetes_deployment" "gits_user_service" {
           }
 
           env {
-            name = "KEYCLOAK_PASSWORD"
+            name  = "KEYCLOAK_PASSWORD"
             value = var.keycloak_admin_pw
           }
-          
+
           env {
             name  = "NEXT_PUBLIC_GITHUB_CLIENT_ID"
             value = var.github_client_id
           }
 
           env {
-            name = "GITHUB_CLIENT_SECRET"
+            name  = "GITHUB_CLIENT_SECRET"
             value = var.github_client_secret
           }
 
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 5001
 
+            }
 
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 5001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 5001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
-
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 5001
-
-             }
-
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }
@@ -154,7 +151,7 @@ resource "helm_release" "user_service_db" {
 
 resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_user_service_hpa" {
   metadata {
-    name = kubernetes_deployment.gits_user_service.metadata[0].name
+    name      = kubernetes_deployment.gits_user_service.metadata[0].name
     namespace = var.namespace
   }
 
@@ -164,8 +161,8 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_user_service_hpa" {
 
     scale_target_ref {
       api_version = "apps/v1"
-      kind = "Deployment"
-      name = kubernetes_deployment.gits_user_service.metadata[0].name
+      kind        = "Deployment"
+      name        = kubernetes_deployment.gits_user_service.metadata[0].name
     }
 
     metric {
@@ -173,10 +170,10 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_user_service_hpa" {
       resource {
         name = "cpu"
         target {
-          type = "Utilization"
+          type                = "Utilization"
           average_utilization = 300
         }
       }
     }
-  }  
+  }
 }

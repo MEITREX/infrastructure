@@ -28,16 +28,16 @@ resource "kubernetes_deployment" "gits_flashcard_service" {
           app = "gits-flashcard-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
+          "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "flashcard-service"
-          "dapr.io/app-port"  = 6001
-          "dapr.io/http-port" = 6000
+          "dapr.io/app-id"         = "flashcard-service"
+          "dapr.io/app-port"       = 6001
+          "dapr.io/http-port"      = 6000
         }
       }
 
       spec {
-       container {
+        container {
           image             = "ghcr.io/meitrex/flashcard_service:latest"
           image_pull_policy = "Always"
 
@@ -69,27 +69,27 @@ resource "kubernetes_deployment" "gits_flashcard_service" {
             value = random_password.flashcard_service_db_pass.result
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 6001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 6001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 6001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 6001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }

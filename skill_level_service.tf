@@ -28,11 +28,11 @@ resource "kubernetes_deployment" "gits_skilllevel_service" {
           app = "gits-skilllevel-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
+          "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "skilllevel-service"
-          "dapr.io/app-port"  = 8001
-          "dapr.io/http-port" = 8000
+          "dapr.io/app-id"         = "skilllevel-service"
+          "dapr.io/app-port"       = 8001
+          "dapr.io/http-port"      = 8000
         }
       }
 
@@ -80,27 +80,27 @@ resource "kubernetes_deployment" "gits_skilllevel_service" {
           }
 
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 8001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 8001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 8001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 8001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }

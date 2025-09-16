@@ -28,11 +28,11 @@ resource "kubernetes_deployment" "gits_assignment_service" {
           app = "gits-assignment-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
+          "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "assignment-service"
-          "dapr.io/app-port"  = 1101
-          "dapr.io/http-port" = 1100
+          "dapr.io/app-id"         = "assignment-service"
+          "dapr.io/app-port"       = 1101
+          "dapr.io/http-port"      = 1100
         }
       }
 
@@ -70,44 +70,44 @@ resource "kubernetes_deployment" "gits_assignment_service" {
           }
 
           env {
-            name = "GITHUB_ORG_NAME"
+            name  = "GITHUB_ORG_NAME"
             value = "MEITREX"
           }
 
           env {
-            name = "COURSE_SERVICE_URL"
+            name  = "COURSE_SERVICE_URL"
             value = "http://localhost:3500/v1.0/invoke/course-service/method/graphql"
           }
-           env {
-            name = "CONTENT_SERVICE_URL"
+          env {
+            name  = "CONTENT_SERVICE_URL"
             value = "http://localhost:3500/v1.0/invoke/content-service/method/graphql"
           }
           env {
-            name = "USER_SERVICE_URL"
+            name  = "USER_SERVICE_URL"
             value = "http://localhost:3500/v1.0/invoke/user-service/method/graphql"
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 1101
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 1101
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 1101
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 1101
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }

@@ -10,7 +10,7 @@ resource "helm_release" "prometheus-stack" {
     name  = "prometheus.prometheusSpec.scrapeInterval"
     value = "30s"
   }
-  
+
   set {
     name  = "prometheus.prometheusSpec.evaluationInterval"
     value = "30s"
@@ -30,16 +30,16 @@ resource "helm_release" "prometheus-stack" {
     name  = "prometheus.prometheusSpec.additionalScrapeConfigsSecret.key"
     value = "prometheus.yml"
   }
-  
+
   set {
-    name = "grafana.persistence.enabled"
+    name  = "grafana.persistence.enabled"
     value = "true"
   }
 }
 
 resource "kubernetes_secret" "dapr-scrape-config" {
   metadata {
-    name = "prometheus-dapr-cfg"
+    name      = "prometheus-dapr-cfg"
     namespace = "prometheus-operator"
 
   }

@@ -29,11 +29,11 @@ resource "kubernetes_deployment" "gits_content_service" {
           app = "gits-content-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
+          "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "content-service"
-          "dapr.io/app-port"  = 4001
-          "dapr.io/http-port" = 4000
+          "dapr.io/app-id"         = "content-service"
+          "dapr.io/app-port"       = 4001
+          "dapr.io/http-port"      = 4000
         }
       }
 
@@ -70,27 +70,27 @@ resource "kubernetes_deployment" "gits_content_service" {
             value = random_password.content_service_db_pass.result
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 4001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 4001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 4001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 4001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }

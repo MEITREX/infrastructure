@@ -28,16 +28,16 @@ resource "kubernetes_deployment" "gits_media_service" {
           app = "gits-media-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
-          "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "media-service"
-          "dapr.io/app-port"  = 3001
-          "dapr.io/http-port" = 3000
-          "dapr.io/sidecar-cpu-request" = "100m"
-          "dapr.io/sidecar-cpu-limit"   = "200m"
+          "dapr.io/enabled"                = true
+          "dapr.io/enable-metrics"         = true
+          "dapr.io/app-id"                 = "media-service"
+          "dapr.io/app-port"               = 3001
+          "dapr.io/http-port"              = 3000
+          "dapr.io/sidecar-cpu-request"    = "100m"
+          "dapr.io/sidecar-cpu-limit"      = "200m"
           "dapr.io/sidecar-memory-request" = "100Mi"
           "dapr.io/sidecar-memory-limit"   = "200Mi"
-          "dapr.io/env" = "GOMEMLIMIT=180MiB"
+          "dapr.io/env"                    = "GOMEMLIMIT=180MiB"
         }
       }
 
@@ -95,27 +95,27 @@ resource "kubernetes_deployment" "gits_media_service" {
             value = random_password.media_service_minio_pass.result
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 3001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 3001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 3001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 3001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }
@@ -176,34 +176,34 @@ resource "helm_release" "minio" {
     name  = "auth.rootPassword"
     value = random_password.media_service_minio_pass.result
   }
-  
+
   set {
     name  = "extraEnvVars[0].name"
     value = "MINIO_BROWSER_REDIRECT_URL"
   }
 
   set {
-    name = "extraEnvVars[1].name"
+    name  = "extraEnvVars[1].name"
     value = "MINIO_NOTIFY_WEBHOOK_ENABLE_onObjectCreated"
   }
 
   set {
-    name = "extraEnvVars[1].value"
+    name  = "extraEnvVars[1].value"
     value = "on"
   }
 
   set {
-    name = "extraEnvVars[2].name"
+    name  = "extraEnvVars[2].name"
     value = "MINIO_NOTIFY_WEBHOOK_ENDPOINT_onObjectCreated"
   }
 
   set {
-    name = "extraEnvVars[2].value"
+    name  = "extraEnvVars[2].value"
     value = "http://media-service/webhook/on-minio-object-create"
   }
 
   set {
-    name = "persistence.size"
+    name  = "persistence.size"
     value = "2Ti"
   }
 }
@@ -212,7 +212,7 @@ resource "kubernetes_service" "media_service" {
   metadata {
     name      = "media-service"
     namespace = var.namespace
-    
+
   }
 
   spec {
@@ -221,8 +221,8 @@ resource "kubernetes_service" "media_service" {
     }
 
     port {
-      name       = "http"
-      port       = 80
+      name        = "http"
+      port        = 80
       target_port = 3001
     }
   }
@@ -230,7 +230,7 @@ resource "kubernetes_service" "media_service" {
 
 resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_media_service_hpa" {
   metadata {
-    name = kubernetes_deployment.gits_media_service.metadata[0].name
+    name      = kubernetes_deployment.gits_media_service.metadata[0].name
     namespace = var.namespace
   }
 
@@ -240,8 +240,8 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_media_service_hpa" {
 
     scale_target_ref {
       api_version = "apps/v1"
-      kind = "Deployment"
-      name = kubernetes_deployment.gits_media_service.metadata[0].name
+      kind        = "Deployment"
+      name        = kubernetes_deployment.gits_media_service.metadata[0].name
     }
 
     metric {
@@ -249,10 +249,10 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_media_service_hpa" {
       resource {
         name = "cpu"
         target {
-          type = "Utilization"
+          type                = "Utilization"
           average_utilization = 300
         }
       }
     }
-  }  
+  }
 }

@@ -28,11 +28,11 @@ resource "kubernetes_deployment" "gits_docprocai_service" {
           app = "gits-docprocai-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
+          "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "docprocai-service"
-          "dapr.io/app-port"  = 9901
-          "dapr.io/http-port" = 9900
+          "dapr.io/app-id"         = "docprocai-service"
+          "dapr.io/app-port"       = 9901
+          "dapr.io/http-port"      = 9900
         }
       }
 
@@ -70,11 +70,11 @@ resource "kubernetes_deployment" "gits_docprocai_service" {
           }
 
           env {
-            name = "media_service_url"
+            name  = "media_service_url"
             value = "http://localhost:3500/v1.0/invoke/media-service/method/graphql"
           }
 
-          env {      
+          env {
             name  = "connection_string"
             value = "user=gits password=${random_password.docprocai_service_db_pass.result} host=docprocai-service-db-postgresql port=5432 dbname=docprocai-service"
           }

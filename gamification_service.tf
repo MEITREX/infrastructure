@@ -28,11 +28,11 @@ resource "kubernetes_deployment" "gits_gamification_service" {
           app = "gits-gamification-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
+          "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "gamification-service"
-          "dapr.io/app-port"  = 1201
-          "dapr.io/http-port" = 1200
+          "dapr.io/app-id"         = "gamification-service"
+          "dapr.io/app-port"       = 1201
+          "dapr.io/http-port"      = 1200
         }
       }
 
@@ -70,36 +70,36 @@ resource "kubernetes_deployment" "gits_gamification_service" {
           }
 
           env {
-            name = "CONTENT_SERVICE_URL"
+            name  = "CONTENT_SERVICE_URL"
             value = "http://localhost:3500/v1.0/invoke/content-service/method/graphql"
           }
 
           env {
-            name = "COURSE_SERVICE_URL"
+            name  = "COURSE_SERVICE_URL"
             value = "http://localhost:3500/v1.0/invoke/course-service/method/graphql"
           }
-          
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 1201
 
-             }
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 1201
 
-             initial_delay_seconds = 90
-             period_seconds        = 9
-           }
+            }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 1201
+            initial_delay_seconds = 90
+            period_seconds        = 9
+          }
 
-             }
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 1201
 
-             initial_delay_seconds = 90
-             period_seconds        = 9
-           }
+            }
+
+            initial_delay_seconds = 90
+            period_seconds        = 9
+          }
         }
       }
     }

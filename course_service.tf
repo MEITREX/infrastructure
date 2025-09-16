@@ -28,16 +28,16 @@ resource "kubernetes_deployment" "gits_course_service" {
           app = "gits-course-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
-          "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "course-service"
-          "dapr.io/app-port"  = 2001
-          "dapr.io/http-port" = 2000
-          "dapr.io/sidecar-cpu-request" = "100m"
-          "dapr.io/sidecar-cpu-limit"   = "200m"
+          "dapr.io/enabled"                = true
+          "dapr.io/enable-metrics"         = true
+          "dapr.io/app-id"                 = "course-service"
+          "dapr.io/app-port"               = 2001
+          "dapr.io/http-port"              = 2000
+          "dapr.io/sidecar-cpu-request"    = "100m"
+          "dapr.io/sidecar-cpu-limit"      = "200m"
           "dapr.io/sidecar-memory-request" = "100Mi"
           "dapr.io/sidecar-memory-limit"   = "200Mi"
-          "dapr.io/env" = "GOMEMLIMIT=180MiB"
+          "dapr.io/env"                    = "GOMEMLIMIT=180MiB"
         }
       }
 
@@ -70,27 +70,27 @@ resource "kubernetes_deployment" "gits_course_service" {
             value = random_password.course_service_db_pass.result
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 2001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 2001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 2001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 2001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }
@@ -131,7 +131,7 @@ resource "helm_release" "course_service_db" {
 
 resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_course_service_hpa" {
   metadata {
-    name = kubernetes_deployment.gits_course_service.metadata[0].name
+    name      = kubernetes_deployment.gits_course_service.metadata[0].name
     namespace = var.namespace
   }
 
@@ -141,8 +141,8 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_course_service_hpa" {
 
     scale_target_ref {
       api_version = "apps/v1"
-      kind = "Deployment"
-      name = kubernetes_deployment.gits_course_service.metadata[0].name
+      kind        = "Deployment"
+      name        = kubernetes_deployment.gits_course_service.metadata[0].name
     }
 
     metric {
@@ -150,10 +150,10 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_course_service_hpa" {
       resource {
         name = "cpu"
         target {
-          type = "Utilization"
+          type                = "Utilization"
           average_utilization = 300
         }
       }
     }
-  }  
+  }
 }

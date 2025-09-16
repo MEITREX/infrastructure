@@ -28,11 +28,11 @@ resource "kubernetes_deployment" "gits_reward_service" {
           app = "gits-reward-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
+          "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "reward-service"
-          "dapr.io/app-port"  = 7001
-          "dapr.io/http-port" = 7000
+          "dapr.io/app-id"         = "reward-service"
+          "dapr.io/app-port"       = 7001
+          "dapr.io/http-port"      = 7000
         }
       }
 
@@ -80,27 +80,27 @@ resource "kubernetes_deployment" "gits_reward_service" {
           }
 
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 7001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 7001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 7001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 7001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }

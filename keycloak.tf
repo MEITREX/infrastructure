@@ -84,5 +84,4 @@ resource "helm_release" "keycloak" {
     name  = "adminIngress.path"
     value = "/keycloak"
   }
-  
 }
