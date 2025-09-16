@@ -28,11 +28,11 @@ resource "kubernetes_deployment" "gits_tutor_service" {
           app = "gits-tutor-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
+          "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"    = "tutor-service"
-          "dapr.io/app-port"  = 1301 
-          "dapr.io/http-port" = 1300
+          "dapr.io/app-id"         = "tutor-service"
+          "dapr.io/app-port"       = 1301
+          "dapr.io/http-port"      = 1300
         }
       }
 
@@ -69,27 +69,37 @@ resource "kubernetes_deployment" "gits_tutor_service" {
             value = random_password.tutor_service_db_pass.result
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 1301
+          env {
+            name  = "CONTENT_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/content-service/method/graphql"
+          }
 
-             }
+          env {
+            name  = "DOCPROC_URL"
+            value = "http://localhost:3500/v1.0/invoke/docprocai-service/method/graphql/"
+          }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 1301
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 1301
+            }
 
-             }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 1301
+
+            }
+
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }
