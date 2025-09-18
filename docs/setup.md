@@ -10,7 +10,7 @@ We have to setup the keycloak realm. We simply navigate to the creator page and 
 
 1. Open the keycloak endpoint. For our deployment the endpoint is accessible under `dev.meitrex.de/keycloak` ![Keycloak login page](./images/keycloak-login.png)
 2. Login into Keycloak with the default user credentials set in the variables file. ![Keycloak main page](./images/keycloak-main-page.png)
-3. Navigate to the create realm page ![Keycloak create realm page](./images/keycloak-manage-realms.png)
+3. Click Manage realms page ![Keycloak create realm page](./images/keycloak-manage-realms.png)
 4. Click Create realm button ![Keycloak create realm page](./images/keycloak-create-realms.png)
 5. Import realm provided in this repository. Copy contents of GITS realm file into the form ![Keycloak import realm page](./images/keycloak-import-realms.png)
 6. Press Create
