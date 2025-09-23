@@ -81,6 +81,7 @@ For steps 6 & 7 are more detailed guides available here.
 
 - **Disappearing Dapr Sidecars**: If Dapr sidecars disappear, causing communication to stop working in the cluster, try restarting the affected deployments.
 - **Schema Changes in Services**: If there are schema changes in individual services without changes in the gateway code, a restart of the gateway deployment is required.
+- **Setting Environment Variables for a Spring Service**: If you want to add a service to this deployment and it is a Spring Boot Service you can set environment variables which are defined in the properties files as follows. Set in the terraform the env example.property as EXAMPLE_PROPERTY. Replace all . with _ and write in capital letters. Spring will automatically set the value.
 
 Hint: For easier management and debugging, it helps to use a Kubernetes management UI like Lens to connect to the cluster, restart deployments or setup port forwarding.
 
