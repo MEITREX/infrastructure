@@ -1,5 +1,3 @@
----
-
 # MEITREX Infrastructure
 
 ## Overview
@@ -75,7 +73,7 @@ The GraphQL Gateway, configured in `gateway.tf`, serves as the central entry poi
 6. **Setup keycloak realm**: Login into keycloak under `https://dev.meitrex.de/keycloak` with admin credentials. Setup keycloak realm with the configuration in the frontend repository. 
 7. **Setup webhook for AI Service**: Login into the minio instance under `https://minio-dashboard.meitrex.de`  and add the webhook to all buckets. 
 
-For steps 6 & 7 are more detailed guides are available [here](https://github.com/MEITREX/infrastructure/blob/schurpl/deployment-overhaul/docs/setup.md). 
+For steps 6 & 7 are more detailed guides are available [here](https://github.com/MEITREX/wiki/blob/schurpl-deployment/dev-manuals/deployment/setup.md). 
 
 ### Troubleshooting
 
