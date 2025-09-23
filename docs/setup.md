@@ -1,5 +1,3 @@
----
-
 # Setup Guide 
 
 After the deployment with terraform we have to configure keycloak and Minio for MEITREX. This guide illustrates steps 6 and 7 in the setup guide to assist users in setting up meitrex. 
