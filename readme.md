@@ -30,7 +30,7 @@ We own the domain `meitrex.de`, which is currently only used for exposing the de
 
 ### General Infrastructure Resources
 
-- **main.tf**: Defines the Kubernetes namespace `meitrex`.
+- **main.tf**: Defines providers.
 - **ingress.tf**: Sets up the Nginx ingress for managing external access. Configurations for SSL redirection and proxy buffer sizes are also defined here. All services to be exposed have to be configured here.
 - **dapr.tf**: Deploys the Dapr runtime using Helm charts. Also includes the setup for state and pub-sub components using Redis.
 - **keel.tf**: Manages the deployment of Keel, a tool used for automated Kubernetes deployments, via Helm charts.
