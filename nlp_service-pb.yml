@@ -15,7 +15,7 @@
 
     - name: Ensure models folder exists
       file:
-        path: "/home/external/Documents/Meitrex/nlp_service/embedding_service/models/llm_data"
+        path: "/home/external/Meitrex/nlp_service/embedding_service/models/llm_data"
         state: directory
 
     - name: Copy embedding model data on remote host
