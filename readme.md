@@ -35,7 +35,7 @@ We own the domain `meitrex.de`, which is currently only used for exposing the de
 - **dapr.tf**: Deploys the Dapr runtime using Helm charts. Also includes the setup for state and pub-sub components using Redis.
 - **keel.tf**: Manages the deployment of Keel, a tool used for automated Kubernetes deployments, via Helm charts.
 - **keycloak.tf**: Handles the setup for Keycloak, used for identity and access management. It utilizes Helm charts for deployment and includes admin user and password settings.
-- **prometheus.tf**: Deploys the prometheus stack into a separate prometheus namespace to monitor the MEITREX application.
+- **prometheus.tf**: Deploys the prometheus stack into a separate prometheus namespace to monitor the MEITREX application. The stack contains prometheus itself, the Alert Manager and Grafana. 
 
 ### Frontend Deployment
 
