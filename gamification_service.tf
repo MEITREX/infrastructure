@@ -78,6 +78,11 @@ resource "kubernetes_deployment" "gits_gamification_service" {
             name  = "COURSE_SERVICE_URL"
             value = "http://localhost:3500/v1.0/invoke/course-service/method/graphql"
           }
+          
+          env {
+            name  = "KEYCLOAK_CLIENT-SECRET"
+            value = data.kubernetes_secret.keycloak_client_secret.data["client-secret"]
+          }
 
           liveness_probe {
             http_get {
@@ -135,5 +140,12 @@ resource "helm_release" "gamification_service_db" {
   set {
     name  = "global.postgresql.auth.password"
     value = random_password.gamification_service_db_pass.result
+  }
+}
+
+data "kubernetes_secret" "keycloak_client_secret" {
+  metadata {
+    name      = "keycloak-client-secret"
+    namespace = var.namespace
   }
 }
