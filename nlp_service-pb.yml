@@ -36,6 +36,6 @@
         chdir: /home/external/Meitrex/nlp_service
 
     - name: Run NLP service container
-      command: docker run -d -p 11434:11434 -p 11435:11435 --name nlp_service
+      command: docker compose up -d
       args:
         chdir: /home/external/Meitrex/nlp_service
