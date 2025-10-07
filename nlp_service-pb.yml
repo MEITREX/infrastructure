@@ -10,7 +10,7 @@
     - name: Clone repository
       git:
         repo: https://github.com/MEITREX/nlp_service
-        dest: "/home/external/Documents/Meitrex/nlp_service"
+        dest: "/home/external/Meitrex/nlp_service"
         update: yes
 
     - name: Ensure models folder exists
