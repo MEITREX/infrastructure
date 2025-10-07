@@ -55,11 +55,6 @@ resource "kubernetes_deployment" "gits_docprocai_service" {
           }
 
           env {
-            name  = "SPRING_DATASOURCE_URL"
-            value = "jdbc:postgresql://docprocai-service-db-postgresql:5432/docprocai-service"
-          }
-
-          env {
             name  = "SPRING_DATASOURCE_USERNAME"
             value = "gits"
           }
