@@ -80,7 +80,12 @@ resource "kubernetes_deployment" "gits_gamification_service" {
           }
           
           env {
-            name  = "KEYCLOAK_CLIENT-SECRET"
+            name  = "KEYCLOAK_URL"
+            value = "http://keycloak:80/keycloak"
+          }
+          
+          env {      
+            name  = "KEYCLOAK_CLIENTSECRET"
             value = data.kubernetes_secret.keycloak_client_secret.data["client-secret"]
           }
 
