@@ -69,6 +69,16 @@ resource "kubernetes_deployment" "gits_notification_service" {
             value = random_password.notification_service_db_pass.result
           }
 
+          env {
+            name  = "COURSE_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/course-service/method/graphql"
+          }
+
+          env {
+            name  = "USER_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/user-service/method/graphql"
+          }
+
           liveness_probe {
             http_get {
               path = "/actuator/health/liveness"
