@@ -24,7 +24,7 @@ All services are exposed through an Nginx ingress that is presumed to already ex
 
 ### meitrex.de
 
-We own the domain `meitrex.de`, which is currently only used for exposing the development version of MEITREX under the sub-domain `dev.meitrex.de`. The MINIO service endpoint under `minio.meitrex.de` and the corresponding dashboard under `minio-dashboard.meitrex.de`.
+We own the domain `meitrex.de`, under which the application currently runs. The MINIO service endpoint under `minio.meitrex.de` and the corresponding dashboard under `minio-dashboard.meitrex.de`.
 
 ## Repository Structure
 
