@@ -206,6 +206,21 @@ resource "helm_release" "minio" {
     name  = "persistence.size"
     value = "2Ti"
   }
+
+  set {
+    name  = "image.repository"
+    value = "bitnamilegacy/minio"
+  }
+
+  set {
+    name  = "clientImage.repository"
+    value = "bitnamilegacy/minio-client"
+  }
+
+  set {
+    name  = "global.security.allowInsecureImages"
+    value = "true"
+  }
 }
 
 resource "kubernetes_service" "media_service" {

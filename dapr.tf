@@ -23,6 +23,14 @@ resource "helm_release" "redis" {
     name  = "auth.password"
     value = random_password.redis.result
   }
+  set {
+    name  = "image.repository"
+    value = "bitnamilegacy/redis"
+  }
+  set {
+    name  = "global.security.allowInsecureImages"
+    value = "true"
+  }
 }
 
 # -- comment out the two resources below when initially creating the cluster, somehow this fails to plan on the first run
