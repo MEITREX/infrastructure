@@ -70,7 +70,7 @@ The GraphQL Gateway, configured in `gateway.tf`, serves as the central entry poi
 3. **Setup**: Ensure all prerequisites are met as outlined in the Prerequisites section.
 4. **Initialize Terraform**: Run `terraform init` to initialize the Terraform workspace.
 5. **Apply Configuration**: Execute `terraform apply` to deploy the resources to your Kubernetes cluster.
-6. **Setup keycloak realm**: Login into keycloak under `https://dev.meitrex.de/keycloak` with admin credentials. Setup keycloak realm with the configuration in the frontend repository. 
+6. **Setup keycloak realm**: Login into keycloak under `https://meitrex.de/keycloak` with admin credentials. Setup keycloak realm with the configuration in the frontend repository. 
 7. **Setup webhook for AI Service**: Login into the minio instance under `https://minio-dashboard.meitrex.de`  and add the webhook to all buckets. 
 
 For steps 6 & 7 are more detailed guides are available [here](https://github.com/MEITREX/wiki/blob/schurpl-deployment/dev-manuals/deployment/setup.md). 
