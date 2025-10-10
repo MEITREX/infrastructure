@@ -46,11 +46,11 @@ resource "kubernetes_deployment" "gits_docprocai_service" {
           resources {
             limits = {
               cpu    = "2.5"
-              memory = "4Gi"
+              memory = "8Gi"
             }
             requests = {
               cpu    = "1"
-              memory = "2Gi"
+              memory = "6Gi"
             }
           }
 
