@@ -49,11 +49,11 @@ resource "kubernetes_deployment" "gits_frontend" {
 
           env {
             name  = "NEXT_PUBLIC_BACKEND_URL"
-            value = "https://dev.meitrex.de/graphql"
+            value = "https://meitrex.de/graphql"
           }
           env {
             name  = "NEXT_PUBLIC_OAUTH_REDIRECT_URL"
-            value = "https://dev.meitrex.de"
+            value = "https://meitrex.de"
           }
           env {
             name  = "NEXT_PUBLIC_OAUTH_CLIENT_ID"
@@ -61,7 +61,7 @@ resource "kubernetes_deployment" "gits_frontend" {
           }
           env {
             name  = "NEXT_PUBLIC_OAUTH_AUTHORITY"
-            value = "https://dev.meitrex.de/keycloak/realms/GITS"
+            value = "https://meitrex.de/keycloak/realms/GITS"
           }
           env {
             name  = "NEXT_PUBLIC_GITHUB_CLIENT_ID"

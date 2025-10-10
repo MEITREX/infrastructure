@@ -25,7 +25,7 @@ resource "kubernetes_ingress_v1" "gits" {
     }
 
     rule {
-      host = "dev.meitrex.de"
+      host = "meitrex.de"
       http {
         path {
           backend {
@@ -43,7 +43,7 @@ resource "kubernetes_ingress_v1" "gits" {
     }
 
     rule {
-      host = "dev.meitrex.de"
+      host = "meitrex.de"
       http {
         path {
           backend {
@@ -87,7 +87,7 @@ resource "kubernetes_ingress_v1" "minio" {
       "kubernetes.io/ingress.class"                         = "nginx"
       "nginx.ingress.kubernetes.io/ssl-redirect"            = "true"
       "nginx.ingress.kubernetes.io/enable-cors"             = "true"
-      "nginx.ingress.kubernetes.io/cors-allow-origin"       = "https://dev.meitrex.de"
+      "nginx.ingress.kubernetes.io/cors-allow-origin"       = "https://meitrex.de"
       "nginx.ingress.kubernetes.io/proxy-body-size"         = "5g"
       "nginx.ingress.kubernetes.io/proxy-request-buffering" = "off"
       "nginx.ingress.kubernetes.io/proxy-connect-timeout"   = "300"

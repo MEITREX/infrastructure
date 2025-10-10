@@ -62,7 +62,7 @@ resource "helm_release" "keycloak" {
 
   set {
     name  = "ingress.hostname"
-    value = "dev.meitrex.de"
+    value = "meitrex.de"
   }
 
   set {
@@ -77,7 +77,7 @@ resource "helm_release" "keycloak" {
 
   set {
     name  = "adminIngress.hostname"
-    value = "dev.meitrex.de"
+    value = "meitrex.de"
   }
 
   set {
