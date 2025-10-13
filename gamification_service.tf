@@ -46,7 +46,7 @@ resource "kubernetes_deployment" "gits_gamification_service" {
           resources {
             limits = {
               cpu    = "0.5"
-              memory = "512Mi"
+              memory = "1Gi"
             }
             requests = {
               cpu    = "50m"
