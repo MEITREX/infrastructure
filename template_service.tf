@@ -1,9 +1,10 @@
-resource "kubernetes_deployment" "gits_reward_service" {
-  depends_on = [helm_release.reward_service_db, helm_release.dapr, helm_release.keel]
+/*
+resource "kubernetes_deployment" "gits_<template>_service" {
+  depends_on = [helm_release.<template>_service_db, helm_release.dapr, helm_release.keel]
   metadata {
-    name = "gits-reward-service"
+    name = "gits-<template>-service"
     labels = {
-      app = "gits-reward-service"
+      app = "gits-<template>-service"
     }
     namespace = var.namespace
     annotations = {
@@ -18,30 +19,30 @@ resource "kubernetes_deployment" "gits_reward_service" {
 
     selector {
       match_labels = {
-        app = "gits-reward-service"
+        app = "gits-<template>-service"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "gits-reward-service"
+          app = "gits-<template>-service"
         }
         annotations = {
           "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"         = "reward-service"
-          "dapr.io/app-port"       = 7001
-          "dapr.io/http-port"      = 7000
+          "dapr.io/app-id"         = "<template>-service"
+          "dapr.io/app-port"       = 0001
+          "dapr.io/http-port"      = 0000
         }
       }
 
       spec {
         container {
-          image             = "ghcr.io/meitrex/reward_service:latest"
+          image             = "ghcr.io/meitrex/<template>_service:latest"
           image_pull_policy = "Always"
 
-          name = "gits-reward-service"
+          name = "gits-<template>-service"
 
           resources {
             limits = {
@@ -56,7 +57,7 @@ resource "kubernetes_deployment" "gits_reward_service" {
 
           env {
             name  = "SPRING_DATASOURCE_URL"
-            value = "jdbc:postgresql://reward-service-db-postgresql:5432/reward-service"
+            value = "jdbc:postgresql://<template>-service-db-postgresql:5432/<template>-service"
           }
 
           env {
@@ -66,24 +67,13 @@ resource "kubernetes_deployment" "gits_reward_service" {
 
           env {
             name  = "SPRING_DATASOURCE_PASSWORD"
-            value = random_password.reward_service_db_pass.result
+            value = random_password.<template>_service_db_pass.result
           }
-
-          env {
-            name  = "COURSE_SERVICE_URL"
-            value = "http://localhost:3500/v1.0/invoke/course-service/method/graphql"
-          }
-
-          env {
-            name  = "CONTENT_SERVICE_URL"
-            value = "http://localhost:3500/v1.0/invoke/content-service/method/graphql"
-          }
-
 
           liveness_probe {
             http_get {
               path = "/actuator/health/liveness"
-              port = 7001
+              port = 0001
 
             }
 
@@ -94,7 +84,7 @@ resource "kubernetes_deployment" "gits_reward_service" {
           readiness_probe {
             http_get {
               path = "/actuator/health/readiness"
-              port = 7001
+              port = 0001
 
             }
 
@@ -107,20 +97,20 @@ resource "kubernetes_deployment" "gits_reward_service" {
   }
 }
 
-resource "random_password" "reward_service_db_pass" {
+resource "random_password" "<template>_service_db_pass" {
   length  = 32
   special = false
 }
 
-resource "helm_release" "reward_service_db" {
-  name       = "reward-service-db"
+resource "helm_release" "<template>_service_db" {
+  name       = "<template>-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
   namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"
-    value = "reward-service"
+    value = "<template>-service"
   }
 
   set {
@@ -135,8 +125,7 @@ resource "helm_release" "reward_service_db" {
 
   set {
     name  = "global.postgresql.auth.password"
-    value = random_password.reward_service_db_pass.result
+    value = random_password.<template>_service_db_pass.result
   }
 }
-
-
+*/

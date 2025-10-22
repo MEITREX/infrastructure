@@ -1,11 +1,11 @@
 resource "kubernetes_deployment" "gits_quiz_service" {
-  depends_on = [helm_release.quiz_service_db, helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull]
+  depends_on = [helm_release.quiz_service_db, helm_release.dapr, helm_release.keel]
   metadata {
     name = "gits-quiz-service"
     labels = {
       app = "gits-quiz-service"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "keel.sh/policy"    = "force"
       "keel.sh/match-tag" = "true"
@@ -28,22 +28,17 @@ resource "kubernetes_deployment" "gits_quiz_service" {
           app = "gits-quiz-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
-          "dapr.io/app-id"    = "quiz-service"
-          "dapr.io/app-port"  = 9001
-          "dapr.io/http-port" = 9000
+          "dapr.io/enabled"        = true
+          "dapr.io/enable-metrics" = true
+          "dapr.io/app-id"         = "quiz-service"
+          "dapr.io/app-port"       = 9001
+          "dapr.io/http-port"      = 9000
         }
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
         container {
-          image             = "ghcr.io/it-rex-platform/quiz_service:latest"
+          image             = "ghcr.io/meitrex/quiz_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-quiz-service"
@@ -85,27 +80,27 @@ resource "kubernetes_deployment" "gits_quiz_service" {
           }
 
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 9001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 9001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 9001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 9001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }
@@ -121,7 +116,7 @@ resource "helm_release" "quiz_service_db" {
   name       = "quiz-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"

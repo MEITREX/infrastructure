@@ -1,11 +1,11 @@
 resource "kubernetes_deployment" "gits_flashcard_service" {
-  depends_on = [helm_release.flashcard_service_db, helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull]
+  depends_on = [helm_release.flashcard_service_db, helm_release.dapr, helm_release.keel]
   metadata {
     name = "gits-flashcard-service"
     labels = {
       app = "gits-flashcard-service"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "keel.sh/policy"    = "force"
       "keel.sh/match-tag" = "true"
@@ -28,22 +28,17 @@ resource "kubernetes_deployment" "gits_flashcard_service" {
           app = "gits-flashcard-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
-          "dapr.io/app-id"    = "flashcard-service"
-          "dapr.io/app-port"  = 6001
-          "dapr.io/http-port" = 6000
+          "dapr.io/enabled"        = true
+          "dapr.io/enable-metrics" = true
+          "dapr.io/app-id"         = "flashcard-service"
+          "dapr.io/app-port"       = 6001
+          "dapr.io/http-port"      = 6000
         }
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
         container {
-          image             = "ghcr.io/it-rex-platform/flashcard_service:latest"
+          image             = "ghcr.io/meitrex/flashcard_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-flashcard-service"
@@ -74,27 +69,27 @@ resource "kubernetes_deployment" "gits_flashcard_service" {
             value = random_password.flashcard_service_db_pass.result
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 6001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 6001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 6001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 6001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }
@@ -110,7 +105,7 @@ resource "helm_release" "flashcard_service_db" {
   name       = "flashcard-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"

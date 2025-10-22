@@ -1,12 +1,12 @@
 resource "kubernetes_deployment" "gits_content_service" {
-  depends_on = [helm_release.content_service_db, helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull]
+  depends_on = [helm_release.content_service_db, helm_release.dapr, helm_release.keel]
   metadata {
 
     name = "gits-content-service"
     labels = {
       app = "gits-content-service"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "keel.sh/policy"    = "force"
       "keel.sh/match-tag" = "true"
@@ -29,22 +29,17 @@ resource "kubernetes_deployment" "gits_content_service" {
           app = "gits-content-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
-          "dapr.io/app-id"    = "content-service"
-          "dapr.io/app-port"  = 4001
-          "dapr.io/http-port" = 4000
+          "dapr.io/enabled"        = true
+          "dapr.io/enable-metrics" = true
+          "dapr.io/app-id"         = "content-service"
+          "dapr.io/app-port"       = 4001
+          "dapr.io/http-port"      = 4000
         }
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
         container {
-          image             = "ghcr.io/it-rex-platform/content_service:latest"
+          image             = "ghcr.io/meitrex/content_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-content-service"
@@ -75,27 +70,27 @@ resource "kubernetes_deployment" "gits_content_service" {
             value = random_password.content_service_db_pass.result
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 4001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 4001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 4001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 4001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }
@@ -111,7 +106,7 @@ resource "helm_release" "content_service_db" {
   name       = "content-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"

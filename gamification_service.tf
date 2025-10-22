@@ -1,9 +1,9 @@
-resource "kubernetes_deployment" "gits_reward_service" {
-  depends_on = [helm_release.reward_service_db, helm_release.dapr, helm_release.keel]
+resource "kubernetes_deployment" "gits_gamification_service" {
+  depends_on = [helm_release.gamification_service_db, helm_release.dapr, helm_release.keel]
   metadata {
-    name = "gits-reward-service"
+    name = "gits-gamification-service"
     labels = {
-      app = "gits-reward-service"
+      app = "gits-gamification-service"
     }
     namespace = var.namespace
     annotations = {
@@ -18,35 +18,35 @@ resource "kubernetes_deployment" "gits_reward_service" {
 
     selector {
       match_labels = {
-        app = "gits-reward-service"
+        app = "gits-gamification-service"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "gits-reward-service"
+          app = "gits-gamification-service"
         }
         annotations = {
           "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"         = "reward-service"
-          "dapr.io/app-port"       = 7001
-          "dapr.io/http-port"      = 7000
+          "dapr.io/app-id"         = "gamification-service"
+          "dapr.io/app-port"       = 1201
+          "dapr.io/http-port"      = 1200
         }
       }
 
       spec {
         container {
-          image             = "ghcr.io/meitrex/reward_service:latest"
+          image             = "ghcr.io/meitrex/gamification_service:latest"
           image_pull_policy = "Always"
 
-          name = "gits-reward-service"
+          name = "gits-gamification-service"
 
           resources {
             limits = {
               cpu    = "0.5"
-              memory = "512Mi"
+              memory = "1Gi"
             }
             requests = {
               cpu    = "50m"
@@ -56,7 +56,7 @@ resource "kubernetes_deployment" "gits_reward_service" {
 
           env {
             name  = "SPRING_DATASOURCE_URL"
-            value = "jdbc:postgresql://reward-service-db-postgresql:5432/reward-service"
+            value = "jdbc:postgresql://gamification-service-db-postgresql:5432/gamification-service"
           }
 
           env {
@@ -66,12 +66,7 @@ resource "kubernetes_deployment" "gits_reward_service" {
 
           env {
             name  = "SPRING_DATASOURCE_PASSWORD"
-            value = random_password.reward_service_db_pass.result
-          }
-
-          env {
-            name  = "COURSE_SERVICE_URL"
-            value = "http://localhost:3500/v1.0/invoke/course-service/method/graphql"
+            value = random_password.gamification_service_db_pass.result
           }
 
           env {
@@ -79,26 +74,40 @@ resource "kubernetes_deployment" "gits_reward_service" {
             value = "http://localhost:3500/v1.0/invoke/content-service/method/graphql"
           }
 
+          env {
+            name  = "COURSE_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/course-service/method/graphql"
+          }
+          
+          env {
+            name  = "KEYCLOAK_URL"
+            value = "http://keycloak:80/keycloak"
+          }
+          
+          env {      
+            name  = "KEYCLOAK_CLIENTSECRET"
+            value = data.kubernetes_secret.keycloak_client_secret.data["client-secret"]
+          }
 
           liveness_probe {
             http_get {
               path = "/actuator/health/liveness"
-              port = 7001
+              port = 1201
 
             }
 
-            initial_delay_seconds = 30
+            initial_delay_seconds = 90
             period_seconds        = 9
           }
 
           readiness_probe {
             http_get {
               path = "/actuator/health/readiness"
-              port = 7001
+              port = 1201
 
             }
 
-            initial_delay_seconds = 30
+            initial_delay_seconds = 90
             period_seconds        = 9
           }
         }
@@ -107,20 +116,20 @@ resource "kubernetes_deployment" "gits_reward_service" {
   }
 }
 
-resource "random_password" "reward_service_db_pass" {
+resource "random_password" "gamification_service_db_pass" {
   length  = 32
   special = false
 }
 
-resource "helm_release" "reward_service_db" {
-  name       = "reward-service-db"
+resource "helm_release" "gamification_service_db" {
+  name       = "gamification-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
   namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"
-    value = "reward-service"
+    value = "gamification-service"
   }
 
   set {
@@ -135,8 +144,13 @@ resource "helm_release" "reward_service_db" {
 
   set {
     name  = "global.postgresql.auth.password"
-    value = random_password.reward_service_db_pass.result
+    value = random_password.gamification_service_db_pass.result
   }
 }
 
-
+data "kubernetes_secret" "keycloak_client_secret" {
+  metadata {
+    name      = "keycloak-client-secret"
+    namespace = var.namespace
+  }
+}

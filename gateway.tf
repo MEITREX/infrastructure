@@ -1,11 +1,11 @@
 resource "kubernetes_deployment" "gits_graphql_gateway" {
-  depends_on = [helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull]
+  depends_on = [helm_release.dapr, helm_release.keel]
   metadata {
     name = "gits-gateway"
     labels = {
       app = "gits-gateway"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "keel.sh/policy"    = "force"
       "keel.sh/match-tag" = "true"
@@ -29,27 +29,22 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
         }
 
         annotations = {
-          "dapr.io/enabled"  = true
-          "dapr.io/app-id"   = "gateway"
-          "dapr.io/app-port" = 8080
-          "dapr.io/sidecar-cpu-request" = "100m"
-          "dapr.io/sidecar-cpu-limit"   = "200m"
+          "dapr.io/enabled"                = true
+          "dapr.io/enable-metrics"         = true
+          "dapr.io/app-id"                 = "gateway"
+          "dapr.io/app-port"               = 8080
+          "dapr.io/sidecar-cpu-request"    = "100m"
+          "dapr.io/sidecar-cpu-limit"      = "200m"
           "dapr.io/sidecar-memory-request" = "100Mi"
           "dapr.io/sidecar-memory-limit"   = "200Mi"
-          "dapr.io/env" = "GOMEMLIMIT=180MiB"
+          "dapr.io/env"                    = "GOMEMLIMIT=180MiB"
         }
 
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
         container {
-          image             = "ghcr.io/it-rex-platform/graphql_gateway:latest"
+          image             = "ghcr.io/meitrex/graphql_gateway:latest"
           image_pull_policy = "Always"
 
           name = "gits-gateway"
@@ -68,6 +63,10 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
           env {
             name  = "GATEWAY_PORT"
             value = "8080"
+          }
+          env {
+            name  = "ASSIGNMENT_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/assignment-service/method/graphql"
           }
           env {
             name  = "COURSE_SERVICE_URL"
@@ -102,10 +101,25 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
             value = "http://localhost:3500/v1.0/invoke/skilllevel-service/method/graphql"
           }
           env {
+            name  = "DOCPROCAI_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/docprocai-service/method/graphql/"
+          }
+          env {
+            name  = "GAMIFICATION_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/gamification-service/method/graphql"
+          }
+          env {
+            name  = "TUTOR_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/tutor-service/method/graphql"
+          }
+          env {
+            name  = "NOTIFICATION_SERVICE_URL"
+            value = "http://localhost:3500/v1.0/invoke/notification-service/method/graphql"
+          }
+          env {
             name  = "JWKS_URL"
             value = "http://keycloak:80/keycloak/realms/GITS/protocol/openid-connect/certs"
           }
-
 
           liveness_probe {
             http_get {
@@ -137,7 +151,7 @@ resource "kubernetes_deployment" "gits_graphql_gateway" {
 resource "kubernetes_service" "gits_graphql_gateway" {
   metadata {
     name      = "gits-graphql-gateway"
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
   }
   spec {
     selector = {
@@ -155,8 +169,8 @@ resource "kubernetes_service" "gits_graphql_gateway" {
 
 resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_graphql_gateway_hpa" {
   metadata {
-    name = kubernetes_deployment.gits_graphql_gateway.metadata[0].name
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    name      = kubernetes_deployment.gits_graphql_gateway.metadata[0].name
+    namespace = var.namespace
   }
 
   spec {
@@ -165,8 +179,8 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_graphql_gateway_hpa" {
 
     scale_target_ref {
       api_version = "apps/v1"
-      kind = "Deployment"
-      name = kubernetes_deployment.gits_graphql_gateway.metadata[0].name
+      kind        = "Deployment"
+      name        = kubernetes_deployment.gits_graphql_gateway.metadata[0].name
     }
 
     metric {
@@ -174,10 +188,10 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_graphql_gateway_hpa" {
       resource {
         name = "cpu"
         target {
-          type = "Utilization"
+          type                = "Utilization"
           average_utilization = 300
         }
       }
     }
-  }  
+  }
 }

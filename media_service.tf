@@ -1,11 +1,11 @@
 resource "kubernetes_deployment" "gits_media_service" {
-  depends_on = [helm_release.media_service_db, helm_release.dapr, helm_release.keel, kubernetes_secret.image_pull, helm_release.minio]
+  depends_on = [helm_release.media_service_db, helm_release.dapr, helm_release.keel, helm_release.minio]
   metadata {
     name = "gits-media-service"
     labels = {
       app = "gits-media-service"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
     annotations = {
       "keel.sh/policy"    = "force"
       "keel.sh/match-tag" = "true"
@@ -28,27 +28,22 @@ resource "kubernetes_deployment" "gits_media_service" {
           app = "gits-media-service"
         }
         annotations = {
-          "dapr.io/enabled"   = true
-          "dapr.io/app-id"    = "media-service"
-          "dapr.io/app-port"  = 3001
-          "dapr.io/http-port" = 3000
-          "dapr.io/sidecar-cpu-request" = "100m"
-          "dapr.io/sidecar-cpu-limit"   = "200m"
+          "dapr.io/enabled"                = true
+          "dapr.io/enable-metrics"         = true
+          "dapr.io/app-id"                 = "media-service"
+          "dapr.io/app-port"               = 3001
+          "dapr.io/http-port"              = 3000
+          "dapr.io/sidecar-cpu-request"    = "100m"
+          "dapr.io/sidecar-cpu-limit"      = "200m"
           "dapr.io/sidecar-memory-request" = "100Mi"
           "dapr.io/sidecar-memory-limit"   = "200Mi"
-          "dapr.io/env" = "GOMEMLIMIT=180MiB"
+          "dapr.io/env"                    = "GOMEMLIMIT=180MiB"
         }
       }
 
       spec {
-
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
-
         container {
-          image             = "ghcr.io/it-rex-platform/media_service:latest"
+          image             = "ghcr.io/meitrex/media_service:latest"
           image_pull_policy = "Always"
 
           name = "gits-media-service"
@@ -80,6 +75,18 @@ resource "kubernetes_deployment" "gits_media_service" {
             value = "http://minio:9000"
           }
           env {
+            name  = "MINIO_PORT"
+            value = "9000"
+          }
+          env {
+            name  = "MINIO_EXTERNAL_URL"
+            value = "https://minio.meitrex.de"
+          }
+          env {
+            name  = "MINIO_EXTERNAL_PORT"
+            value = "443"
+          }
+          env {
             name  = "MINIO_ACCESS_KEY"
             value = "gits"
           }
@@ -88,27 +95,27 @@ resource "kubernetes_deployment" "gits_media_service" {
             value = random_password.media_service_minio_pass.result
           }
 
-           liveness_probe {
-             http_get {
-               path = "/actuator/health/liveness"
-               port = 3001
+          liveness_probe {
+            http_get {
+              path = "/actuator/health/liveness"
+              port = 3001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
 
-           readiness_probe {
-             http_get {
-               path = "/actuator/health/readiness"
-               port = 3001
+          readiness_probe {
+            http_get {
+              path = "/actuator/health/readiness"
+              port = 3001
 
-             }
+            }
 
-             initial_delay_seconds = 30
-             period_seconds        = 9
-           }
+            initial_delay_seconds = 30
+            period_seconds        = 9
+          }
         }
       }
     }
@@ -124,7 +131,7 @@ resource "helm_release" "media_service_db" {
   name       = "media-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"
@@ -157,7 +164,8 @@ resource "helm_release" "minio" {
   name       = "minio"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "minio"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  version    = "16.0.10"
+  namespace  = var.namespace
 
   set {
     name  = "auth.rootUser"
@@ -168,16 +176,77 @@ resource "helm_release" "minio" {
     name  = "auth.rootPassword"
     value = random_password.media_service_minio_pass.result
   }
+
   set {
     name  = "extraEnvVars[0].name"
     value = "MINIO_BROWSER_REDIRECT_URL"
+  }
+
+  set {
+    name  = "extraEnvVars[1].name"
+    value = "MINIO_NOTIFY_WEBHOOK_ENABLE_onObjectCreated"
+  }
+
+  set {
+    name  = "extraEnvVars[1].value"
+    value = "on"
+  }
+
+  set {
+    name  = "extraEnvVars[2].name"
+    value = "MINIO_NOTIFY_WEBHOOK_ENDPOINT_onObjectCreated"
+  }
+
+  set {
+    name  = "extraEnvVars[2].value"
+    value = "http://media-service/webhook/on-minio-object-create"
+  }
+
+  set {
+    name  = "persistence.size"
+    value = "2Ti"
+  }
+
+  set {
+    name  = "image.repository"
+    value = "bitnamilegacy/minio"
+  }
+
+  set {
+    name  = "clientImage.repository"
+    value = "bitnamilegacy/minio-client"
+  }
+
+  set {
+    name  = "global.security.allowInsecureImages"
+    value = "true"
+  }
+}
+
+resource "kubernetes_service" "media_service" {
+  metadata {
+    name      = "media-service"
+    namespace = var.namespace
+
+  }
+
+  spec {
+    selector = {
+      app = kubernetes_deployment.gits_media_service.metadata[0].name
+    }
+
+    port {
+      name        = "http"
+      port        = 80
+      target_port = 3001
+    }
   }
 }
 
 resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_media_service_hpa" {
   metadata {
-    name = kubernetes_deployment.gits_media_service.metadata[0].name
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    name      = kubernetes_deployment.gits_media_service.metadata[0].name
+    namespace = var.namespace
   }
 
   spec {
@@ -186,8 +255,8 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_media_service_hpa" {
 
     scale_target_ref {
       api_version = "apps/v1"
-      kind = "Deployment"
-      name = kubernetes_deployment.gits_media_service.metadata[0].name
+      kind        = "Deployment"
+      name        = kubernetes_deployment.gits_media_service.metadata[0].name
     }
 
     metric {
@@ -195,10 +264,10 @@ resource "kubernetes_horizontal_pod_autoscaler_v2" "gits_media_service_hpa" {
       resource {
         name = "cpu"
         target {
-          type = "Utilization"
+          type                = "Utilization"
           average_utilization = 300
         }
       }
     }
-  }  
+  }
 }

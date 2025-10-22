@@ -4,7 +4,7 @@ resource "kubernetes_deployment" "gits_frontend" {
     labels = {
       app = "gits-frontend"
     }
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
 
     annotations = {
       "keel.sh/policy"    = "force"
@@ -30,12 +30,8 @@ resource "kubernetes_deployment" "gits_frontend" {
       }
 
       spec {
-        image_pull_secrets {
-          name = kubernetes_secret.image_pull.metadata[0].name
-        }
-
         container {
-          image             = "ghcr.io/it-rex-platform/frontend:latest"
+          image             = "ghcr.io/meitrex/frontend:latest-k8s"
           image_pull_policy = "Always"
 
           name = "gits-frontend"
@@ -53,19 +49,23 @@ resource "kubernetes_deployment" "gits_frontend" {
 
           env {
             name  = "NEXT_PUBLIC_BACKEND_URL"
-            value = "/api"
+            value = "https://meitrex.de/graphql"
           }
           env {
             name  = "NEXT_PUBLIC_OAUTH_REDIRECT_URL"
-            value = "http://orange.informatik.uni-stuttgart.de"
+            value = "https://meitrex.de"
           }
           env {
             name  = "NEXT_PUBLIC_OAUTH_CLIENT_ID"
-            value = "gits-frontend"
+            value = "frontend"
           }
           env {
             name  = "NEXT_PUBLIC_OAUTH_AUTHORITY"
-            value = "http://orange.informatik.uni-stuttgart.de/keycloak/realms/GITS"
+            value = "https://meitrex.de/keycloak/realms/GITS"
+          }
+          env {
+            name  = "NEXT_PUBLIC_GITHUB_CLIENT_ID"
+            value = "Iv23li4YaE8QambyYkY8"
           }
 
           liveness_probe {
@@ -87,7 +87,7 @@ resource "kubernetes_deployment" "gits_frontend" {
 resource "kubernetes_service" "gits_frontend" {
   metadata {
     name      = "gits-frontend"
-    namespace = kubernetes_namespace.gits.metadata[0].name
+    namespace = var.namespace
   }
   spec {
     selector = {

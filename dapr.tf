@@ -2,7 +2,8 @@ resource "helm_release" "dapr" {
   name       = "dapr"
   repository = "https://dapr.github.io/helm-charts"
   chart      = "dapr"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  version    = "1.15.5"
+  namespace  = var.namespace
 }
 
 
@@ -15,24 +16,32 @@ resource "helm_release" "redis" {
   name       = "redis"
   repository = "https://charts.bitnami.com/bitnami"
   chart      = "redis"
-  namespace  = kubernetes_namespace.gits.metadata[0].name
+  version    = "17.14.2"
+  namespace  = var.namespace
 
   set {
     name  = "auth.password"
     value = random_password.redis.result
   }
+  set {
+    name  = "image.repository"
+    value = "bitnamilegacy/redis"
+  }
+  set {
+    name  = "global.security.allowInsecureImages"
+    value = "true"
+  }
 }
 
 # -- comment out the two resources below when initially creating the cluster, somehow this fails to plan on the first run
-
+/*
 resource "kubernetes_manifest" "dapr_state_config" {
-  depends_on = [kubernetes_namespace.gits]
   manifest = {
     "apiVersion" = "dapr.io/v1alpha1"
     "kind"       = "Component"
     "metadata" = {
       "name"    = "statestore"
-      namespace = kubernetes_namespace.gits.metadata[0].name
+      namespace = var.namespace
     }
     "spec" = {
       "type"    = "state.redis"
@@ -55,13 +64,12 @@ resource "kubernetes_manifest" "dapr_state_config" {
 
 
 resource "kubernetes_manifest" "dapr_pubsub_config" {
-  depends_on = [kubernetes_namespace.gits]
   manifest = {
     "apiVersion" = "dapr.io/v1alpha1"
     "kind"       = "Component"
     "metadata" = {
-      "name"    = "gits"
-      namespace = kubernetes_namespace.gits.metadata[0].name
+      "name"    = "meitrex"
+      namespace = var.namespace
     }
 
     "spec" = {
@@ -81,3 +89,4 @@ resource "kubernetes_manifest" "dapr_pubsub_config" {
     }
   }
 }
+*/

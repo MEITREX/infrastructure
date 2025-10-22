@@ -1,9 +1,9 @@
-resource "kubernetes_deployment" "gits_reward_service" {
-  depends_on = [helm_release.reward_service_db, helm_release.dapr, helm_release.keel]
+resource "kubernetes_deployment" "gits_tutor_service" {
+  depends_on = [helm_release.tutor_service_db, helm_release.dapr, helm_release.keel]
   metadata {
-    name = "gits-reward-service"
+    name = "gits-tutor-service"
     labels = {
-      app = "gits-reward-service"
+      app = "gits-tutor-service"
     }
     namespace = var.namespace
     annotations = {
@@ -18,30 +18,30 @@ resource "kubernetes_deployment" "gits_reward_service" {
 
     selector {
       match_labels = {
-        app = "gits-reward-service"
+        app = "gits-tutor-service"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "gits-reward-service"
+          app = "gits-tutor-service"
         }
         annotations = {
           "dapr.io/enabled"        = true
           "dapr.io/enable-metrics" = true
-          "dapr.io/app-id"         = "reward-service"
-          "dapr.io/app-port"       = 7001
-          "dapr.io/http-port"      = 7000
+          "dapr.io/app-id"         = "tutor-service"
+          "dapr.io/app-port"       = 1301
+          "dapr.io/http-port"      = 1300
         }
       }
 
       spec {
         container {
-          image             = "ghcr.io/meitrex/reward_service:latest"
+          image             = "ghcr.io/meitrex/tutor_service:latest"
           image_pull_policy = "Always"
 
-          name = "gits-reward-service"
+          name = "gits-tutor-service"
 
           resources {
             limits = {
@@ -56,7 +56,7 @@ resource "kubernetes_deployment" "gits_reward_service" {
 
           env {
             name  = "SPRING_DATASOURCE_URL"
-            value = "jdbc:postgresql://reward-service-db-postgresql:5432/reward-service"
+            value = "jdbc:postgresql://tutor-service-db-postgresql:5432/tutor-service"
           }
 
           env {
@@ -66,12 +66,7 @@ resource "kubernetes_deployment" "gits_reward_service" {
 
           env {
             name  = "SPRING_DATASOURCE_PASSWORD"
-            value = random_password.reward_service_db_pass.result
-          }
-
-          env {
-            name  = "COURSE_SERVICE_URL"
-            value = "http://localhost:3500/v1.0/invoke/course-service/method/graphql"
+            value = random_password.tutor_service_db_pass.result
           }
 
           env {
@@ -79,11 +74,15 @@ resource "kubernetes_deployment" "gits_reward_service" {
             value = "http://localhost:3500/v1.0/invoke/content-service/method/graphql"
           }
 
+          env {
+            name  = "DOCPROC_URL"
+            value = "http://localhost:3500/v1.0/invoke/docprocai-service/method/graphql/"
+          }
 
           liveness_probe {
             http_get {
               path = "/actuator/health/liveness"
-              port = 7001
+              port = 1301
 
             }
 
@@ -94,7 +93,7 @@ resource "kubernetes_deployment" "gits_reward_service" {
           readiness_probe {
             http_get {
               path = "/actuator/health/readiness"
-              port = 7001
+              port = 1301
 
             }
 
@@ -107,20 +106,20 @@ resource "kubernetes_deployment" "gits_reward_service" {
   }
 }
 
-resource "random_password" "reward_service_db_pass" {
+resource "random_password" "tutor_service_db_pass" {
   length  = 32
   special = false
 }
 
-resource "helm_release" "reward_service_db" {
-  name       = "reward-service-db"
+resource "helm_release" "tutor_service_db" {
+  name       = "tutor-service-db"
   repository = "oci://registry-1.docker.io/bitnamicharts"
   chart      = "postgresql"
   namespace  = var.namespace
 
   set {
     name  = "global.postgresql.auth.database"
-    value = "reward-service"
+    value = "tutor-service"
   }
 
   set {
@@ -135,8 +134,6 @@ resource "helm_release" "reward_service_db" {
 
   set {
     name  = "global.postgresql.auth.password"
-    value = random_password.reward_service_db_pass.result
+    value = random_password.tutor_service_db_pass.result
   }
 }
-
-
